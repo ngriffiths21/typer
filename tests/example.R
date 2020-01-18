@@ -1,14 +1,17 @@
-#! addstrings :: character -> character
+#' @param ... <character>
+#' @return <character>
 addstrings <- function(...) {
   c(...)
 }
 
-#! add_six :: numeric -> numeric
+#' @param x <integer> A number
+#' @return <integer> The number plus six
 add_six <- function(x) {
   x + 6
 }
 
-#! add_eight :: numeric -> numeric
+#' @param x <integer> A number
+#' @return <integer> The number plus eight
 add_eight <- function(x) {
   add_six(x) + 2
 }
