@@ -15,3 +15,9 @@ add_six <- function(x) {
 add_eight <- function(x) {
   add_six(x) + 2
 }
+
+#' @param x <integer> A num
+#' @return <integer> A num
+add_test <- function (x) {
+  add_eight(add_six(3)) + x
+}

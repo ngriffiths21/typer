@@ -1,5 +1,7 @@
 get_file_typedefs <- function(filename) {
   blocks <- roxygen2::parse_file(filename)
+  names(blocks) <- lapply(blocks, function (x) { x$object$alias })
+
   blocks <- lapply(blocks, function (block) {
     block$tags <- parse_tags(block$tags)
     block
@@ -8,27 +10,32 @@ get_file_typedefs <- function(filename) {
   typedefs_from_blocks(blocks)
 }
 
-isVar <- function (x) {
-  map_lgl(x, ~.$tag %in% c("param", "return"))
+isReturn <- function (x) {
+  map_lgl(x, ~.$tag == "return")
+}
+
+isParam <- function (x) {
+  map_lgl(x, ~.$tag == "param")
 }
 
 typedefs_from_blocks <- function(blocks) {
   lapply(
     blocks,
     function (block) {
-      result <- map(block$tags[isVar(block$tags)], construct_typedef)
-      result$call <- block$call
-      result$alias <- block$object$alias
-      result
+      list(
+        params = map(block$tags[isParam(block$tags)], construct_param),
+        return = block$tags[isReturn(block$tags)][[1]]$val$type,
+        call = block$call,
+        alias = block$object$alias
+      )
     })
 }
 
-construct_typedef <- function(tg) {
-  tag <- tg$tag
+construct_param <- function(tg) {
   type <- tg$val$type
   name <- tg$val$name
 
-  list(tag = tag, name = name, type = type)
+  list(name = name, type = type)
 }
 
 parse_tags <- function(tags) {

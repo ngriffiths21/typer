@@ -6,27 +6,45 @@ match_call <- function (call) {
 
 get_type_errors <- function (filename) {
   typedefs <- get_file_typedefs(filename)
-  lapply(typedefs, validate_type)
+  validate_types(typedefs)
 }
 
-validate_type <- function (typedef) {
-  if (rlang::is_syntactic_literal(typedef$call)) {
+validate_types <- function (typedefs) {
+  lapply(typedefs, function (x) {
+    validate_type(x$call[[3]][[3]], x$params, typedefs)
+  })
+}
+
+validate_type <- function (call, paramtypes, alltypes) {
+  if (rlang::is_syntactic_literal(call)) {
     return(TRUE)
-  } else if (is.call(typedef$call)) {
-    typedef$call <- lapply(typedef$call, make_literal)
-    call_is_correct(typedef)
+  } else if (is.call(call)) {
+    lapply(call[-1], function (x) { validate_type(x, paramtypes, alltypes) })
+    literalcall <- lapply(call, function (x) { make_literal(x, alltypes) })
+    call_is_correct(literalcall, paramtypes)
+  } else {
+    NA
   }
 }
 
-make_literal <- function (expra) {
+make_literal <- function (expra, allexprs) {
   if (rlang::is_syntactic_literal(expra)) {
     return(expra)
   } else if (is.call(expra)) {
-    stop("don't know how to look up the type definitions yet!")
-    lookup_ret_type(expra[[1]]) # check if there is a known return type
+    allexprs[[expra[[1]]]]$return
+  } else if (is.symbol(expra)) {
+    return(expra)
+  } else {
+    NA
   }
 }
 
-call_is_correct <- function (typedef) {
-  stop("don't know how to see if the actual passed parameters match the type definition")
+call_is_correct <- function (literalcall, paramtypes) {
+  message("call tree:")
+  message(str(literalcall))
+  message("type expected:")
+  message(paramtypes)
+  
+  warning("don't know how to check if expected type matches actual")
+  "no errors I know of"
 }
