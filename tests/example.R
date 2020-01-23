@@ -19,5 +19,11 @@ add_eight <- function(x) {
 #' @param x <integer> A num
 #' @return <integer> A num
 add_test <- function (x) {
-  add_eight(add_six(3)) + x
+  add_eight(add_six(3L)) + x
+}
+
+#' @param x <integer> A num
+#' @return <integer> Another num
+add_wrong <- function (x) {
+  add_test("bad idea")
 }
