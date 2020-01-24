@@ -1,17 +1,23 @@
-# TypeR
+# typer
 
-### Type definitions list
+## Overview
 
-Type definitions parsed from Roxygen2 comment blocks are represented as a named list. The format is the following:
+The typer package makes it easy to catch errors related to mismatched types. These kinds of errors can be especially difficult to track down because R is not a strongly typed language and many packages throw obscure errors when passed something unexpected.
+
+Specifically, the package provides a function to scan a file's Roxygen2 comments for any type definitions, and use those to check whether types are ever used inconsistently.
+
+## Installation
 
 ```r
-List of 1
-$ function_name: List of 4
- ..$ params: List of 1
-   ..$ `...`: List of 3
-      ..$ name: chr "..."
-	  ..$ type: chr "list"
- ..$ return: chr "character"
- ..$ call  : language {function def}
- ..$ alias : chr "function_name"
+devtools::install_github("ngriffiths21/typer")
 ```
+
+## Usage
+
+```r
+typer::get_type_errors("yourscript.R")
+```
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

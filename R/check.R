@@ -3,8 +3,25 @@ match_call <- function (def, call) {
   match.call(definition = def, call = call, expand.dots = FALSE)
 }
 
-#' @title Check a File
+#' Check a file for type errors
+#'
+#' Check for inconsistent use of types within one file.
+#' 
+#' This function checks for inconsistent uses
+#' of types within a file. It checks all function calls in
+#' the file to see whether arguments in the form
+#' of literals, parameters, or return values of other calls
+#' match the type the argument is documented to be.
+#'
+#' The return value is a list of errors, with each error reported
+#' in the following format: `error$fn`, the name of the function that was
+#' given the wrong argument; `error$call`: full call object that produced
+#' the error; `error$type`, which is "literal", "parameter", or "returnval";
+#' `error$expected`, the expected type, as given by `typeof()`; and
+#' `error$got`, the received type, as given by `typeof()`.
+#' 
 #' @param filename File to check
+#' @return A list containing the errors
 #'
 #' @export
 get_type_errors <- function (filename) {
