@@ -4,17 +4,17 @@ test_that("It can get typedefs from an example file", {
 })
 
 test_that("It matches literals to types in add_test", {
-  expect_equal(get_type_errors("../example.R")[["add_test3"]], "ok")
-})
-
-test_that("It matches return values to types in add_test", {
   expect_equal(get_type_errors("../example.R")[["add_test2"]], "ok")
 })
 
+test_that("It matches return values to types in add_test", {
+  expect_equal(get_type_errors("../example.R")[["add_test1"]], "ok")
+})
+
 test_that("It matches parameters to types in add_eight", {
-  expect_equal(get_type_errors("../example.R")[["add_eight2"]], "ok")
+  expect_equal(get_type_errors("../example.R")[["add_eight1"]], "ok")
 })
 
 test_that("It detects an error in add_wrong", {
-  expect_equal(get_type_errors("../example.R")[["add_wrong2"]], "error")
+  expect_equal(get_type_errors("../example.R")[["add_wrong1"]], "error")
 })
