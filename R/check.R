@@ -53,7 +53,10 @@ validate_type <- function (expra, paramtypes, alltypes) {
 validate_call <- function (call, paramtypes, alltypes) {
   append(
     call_is_correct(
-      map(call, ~ make_literal(., alltypes)),
+      append(
+        call[[1]], // must pluck element to reconstruct a call
+        map(call[-1], ~ make_literal(., alltypes, paramtypes))
+      ),
       paramtypes,
       alltypes
     ),
@@ -61,11 +64,19 @@ validate_call <- function (call, paramtypes, alltypes) {
   )
 }
 
-make_literal <- function (expra, allexprs) {
-  if(is.call(expra)) {
+make_literal <- function (expra, allexprs, paramtypes) {
+  if (is.call(expra)) {
     returnval <- allexprs[[expra[[1]]]]$return
     if (!is.null(returnval)) {
       rlang::exec(returnval) # e.g. "logical" --> logical(). R is a truly stupid language
+    }
+  } else if (is.symbol(expra)) {
+    returnval <- paramtypes[[rlang::as_string(expra)]]
+    if (!is.null(returnval)) {
+      rlang::exec(returnval)
+    } else {
+      warning("Typer cannot check the type of variable `", expra, "`. Consider using parameters.")
+      return(expra)
     }
   } else {
     expra
@@ -78,8 +89,8 @@ call_is_correct <- function (literalcall, paramtypes, alltypes) {
 
   if (!is.null(knownfun)) {
     expandedcall <- match_call(eval(knownfun$call), literalcall)
-    paramvals <- map_chr(knownfun$params, ~ typeof(expandedcall[[.$name]]))
-    types <- map_chr(knownfun$params, ~ .$type)
+    paramvals <- imap_chr(knownfun$params, ~ typeof(expandedcall[[.y]]))
+    types <- map_chr(knownfun$params, ~ .)
     ifelse(types == paramvals, "ok", "error")
   }
 }

@@ -23,7 +23,7 @@ typedefs_from_blocks <- function(blocks) {
     blocks,
     function (block) {
       list(
-        params = map(block$tags[isParam(block$tags)], construct_param),
+        params = flatten(map(block$tags[isParam(block$tags)], construct_param)),
         return = block$tags[isReturn(block$tags)][[1]]$val$type,
         call = block$call,
         alias = block$object$alias
@@ -35,7 +35,7 @@ construct_param <- function(tg) {
   type <- tg$val$type
   name <- tg$val$name
 
-  list(name = name, type = type)
+  rlang::list2(!!name := type)
 }
 
 parse_tags <- function(tags) {

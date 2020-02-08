@@ -27,3 +27,9 @@ add_test <- function (x) {
 add_wrong <- function (x) {
   add_test("bad idea")
 }
+
+#' @param x <character> not a num
+#' @return <integer> a num
+add_wrongparam <- function (x) {
+  add_six(x)
+}
