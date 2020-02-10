@@ -22,10 +22,6 @@ the file to see whether arguments in the form
 of literals, parameters, or return values of other calls
 match the type the argument is documented to be.
 
-The return value is a list of errors, with each error reported
-in the following format: `error$fn`, the name of the function that was
-given the wrong argument; `error$call`: full call object that produced
-the error; `error$type`, which is "literal", "parameter", or "returnval";
-`error$expected`, the expected type, as given by `typeof()`; and
-`error$got`, the received type, as given by `typeof()`.
+The function returns a list of results and warns when errors
+are encountered.
 }

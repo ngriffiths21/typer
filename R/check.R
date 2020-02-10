@@ -13,12 +13,8 @@ match_call <- function (def, call) {
 #' of literals, parameters, or return values of other calls
 #' match the type the argument is documented to be.
 #'
-#' The return value is a list of errors, with each error reported
-#' in the following format: `error$fn`, the name of the function that was
-#' given the wrong argument; `error$call`: full call object that produced
-#' the error; `error$type`, which is "literal", "parameter", or "returnval";
-#' `error$expected`, the expected type, as given by `typeof()`; and
-#' `error$got`, the received type, as given by `typeof()`.
+#' The function returns a list of results and warns when errors
+#' are encountered.
 #' 
 #' @param filename File to check
 #' @return A list containing the errors
@@ -41,6 +37,7 @@ extract_fn_body <- function (call) {
   call[[3]][[3]][[-1]]
 }
 
+#' @importFrom stringr str_c
 validate_type <- function (expra, paramtypes, alltypes, currfun) {
   if (rlang::is_syntactic_literal(expra)) {
     list(type_response(message, str_c("valid literal `", expra, "`"), fn = currfun))
@@ -53,6 +50,7 @@ validate_type <- function (expra, paramtypes, alltypes, currfun) {
   }
 }
 
+#' @importFrom purrr map flatten
 validate_call <- function (call, paramtypes, alltypes, currfun) {
   append(
     list(
@@ -98,8 +96,8 @@ call_is_correct <- function (literalcall, paramtypes, alltypes) {
 
   if (!is.null(knownfun)) {
     expandedcall <- match_call(eval(knownfun$call), literalcall)
-    paramvals <- imap_chr(knownfun$params, ~ typeof(expandedcall[[.y]]))
-    types <- map_chr(knownfun$params, ~ .)
+    paramvals <- purrr::imap_chr(knownfun$params, ~ typeof(expandedcall[[.y]]))
+    types <- purrr::map_chr(knownfun$params, ~ .)
 
     if(types == paramvals) {
       type_response(message, str_c("call to `", strfun, "` is correct"),

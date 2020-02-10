@@ -11,11 +11,11 @@ get_file_typedefs <- function(filename) {
 }
 
 isReturn <- function (x) {
-  map_lgl(x, ~.$tag == "return")
+  purrr::map_lgl(x, ~.$tag == "return")
 }
 
 isParam <- function (x) {
-  map_lgl(x, ~.$tag == "param")
+  purrr::map_lgl(x, ~.$tag == "param")
 }
 
 typedefs_from_blocks <- function(blocks) {
@@ -31,6 +31,7 @@ typedefs_from_blocks <- function(blocks) {
     })
 }
 
+#' @importFrom rlang :=
 construct_param <- function(tg) {
   type <- tg$val$type
   name <- tg$val$name
@@ -43,14 +44,14 @@ parse_tags <- function(tags) {
 }
 
 parse_type <- function(tag) {
-  brackets <- regex("(?<=<).*(?=>)")
+  brackets <- stringr::regex("(?<=<).*(?=>)")
   switch(
     tag$tag,
     return = tag$val <- list(
-      type = str_extract(tag$val, brackets),
+      type = stringr::str_extract(tag$val, brackets),
       description = tag$val
     ),
-    param = tag$val$type <- str_extract(tag$val$description, brackets)
+    param = tag$val$type <- stringr::str_extract(tag$val$description, brackets)
   )
   tag
 }

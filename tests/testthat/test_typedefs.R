@@ -26,7 +26,3 @@ test_that("It detects an error in add_wrong", {
 test_that("It detects mismatched parameters", {
   expect_false(test_file_errs[[17]]$passed)
 })
-
-test_that("It matches types of variables in the environment", {
-  expect_true(FALSE)
-})
