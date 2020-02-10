@@ -1,0 +1,47 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+options(tibble.print_min = 5, tibble.print_max = 5)
+
+library(tidyverse)
+```
+
+# typer
+
+## Overview
+
+The typer package searches R scripts for type errors. These kinds of errors can be especially difficult to track down because R is a weakly typed language and many functions throw [confusing errors](https://stackoverflow.com/questions/11308367/error-in-my-code-object-of-type-closure-is-not-subsettable) when you pass them an unexpected type.
+
+The `get_type_errors()` function opens an R script and searches for type definitions, which are written using [Roxygen2](http://r-pkgs.had.co.nz/man.html#roxygen-comments) style comments. Then it checks whether types are used consistently throughout the script.
+
+## Installation
+
+```{r eval=FALSE}
+devtools::install_github("ngriffiths21/typer")
+```
+
+## Usage
+
+First, write type annotations in Roxygen2 comments. Types should be placed in angle brackets at the start of the description of the parameter or return value. Use `class(x)` as the type for `x`.
+
+```{r code=readLines(system.file("example", "simple.R", package = "typer"))}
+```
+
+Then run it through the type checker.
+
+```{r}
+typer::get_type_errors(system.file("example", "simple.R", package = "typer"))
+```
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
