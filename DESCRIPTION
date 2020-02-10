@@ -1,16 +1,14 @@
 Package: typer
 Title: Static Type Checking for Scripts
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Nicholas",
            family = "Griffiths",
            role = c("aut", "cre"),
            email = "ngriffiths21@gmail.com",
            comment = c(ORCID = "0000-0001-8166-9045"))
-Description: R is a weakly-typed programming language, which leaves programs
-    open to a range of type errors that are notoriously difficult to debug.
-    This package provides functions for static analysis of type handling in
-    script files.
+Description: This package can be used to check R code for type errors, which are
+    some of the most common and confusing errors in R programming.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
