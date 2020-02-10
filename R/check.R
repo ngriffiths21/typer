@@ -17,12 +17,21 @@ match_call <- function (def, call) {
 #' are encountered.
 #' 
 #' @param filename File to check
+#' @param full_results if TRUE, return all results. If FALSE, only return errors.
 #' @return A list containing the errors
 #'
 #' @export
-get_type_errors <- function (filename) {
+get_type_errors <- function (filename, full_results = FALSE) {
   typedefs <- get_file_typedefs(filename)
-  validate_types(typedefs)
+  if (full_results == TRUE) {
+    validate_types(typedefs)
+  } else {
+    filter_errors(validate_types(typedefs))
+  }
+}
+
+filter_errors <- function (results) {
+  results[purrr::map_lgl(results, ~ is.list(.) && !is.null(.$passed) && !.$passed)]
 }
 
 validate_types <- function (typedefs) {
@@ -60,7 +69,8 @@ validate_call <- function (call, paramtypes, alltypes, currfun) {
           map(call[-1], ~ make_literal(., alltypes, paramtypes))
         ),
         paramtypes,
-        alltypes
+        alltypes,
+        currfun
       )
     ),
     flatten(map(call[-1], ~ validate_type(., paramtypes, alltypes, currfun)))
@@ -89,7 +99,7 @@ make_literal <- function (expra, allexprs, paramtypes) {
   }
 }
 
-call_is_correct <- function (literalcall, paramtypes, alltypes) {
+call_is_correct <- function (literalcall, paramtypes, alltypes, currfun) {
   literalcall <- as.call(literalcall)
   knownfun <- alltypes[[rlang::as_string(literalcall[[1]])]]
   strfun <- as.list(literalcall)[[1]]
@@ -100,14 +110,14 @@ call_is_correct <- function (literalcall, paramtypes, alltypes) {
     types <- purrr::map_chr(knownfun$params, ~ .)
 
     if(types == paramvals) {
-      type_response(message, str_c("call to `", strfun, "` is correct"),
-                    list(fn = strfun, type = "call", call = expandedcall, types = types, passed = TRUE))
+      type_response(message, str_c("call to `", strfun, "` in `", currfun, "` is correct"),
+                    list(fn = currfun, type = "call", call = expandedcall, expected_params = types, passed = TRUE))
     } else {
-      type_response(collect_error, str_c("error in call to `", strfun, "`!", " wanted ", types, "; got ", paramvals),
-                    list(fn = strfun, type = "call", call = expandedcall, types = types, passed = FALSE))
+      type_response(collect_error, str_c("error in call to `", strfun, "` in `", currfun, "`!", " wanted ", types, "; got ", paramvals),
+                    list(fn = currfun, type = "call", call = expandedcall, expected_params = types, passed = FALSE))
     }
   } else {
-    type_response(warning, str_c("cannot check function `", strfun, "` because it is not defined."), strfun)
+    type_response(message, str_c("cannot check function `", strfun, "` because it is not defined."), strfun)
   }
 }
 

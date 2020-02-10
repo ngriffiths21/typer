@@ -1,6 +1,6 @@
 context("Parsing typedefs")
 
-test_file_errs <- get_type_errors("../example.R")
+test_file_errs <- get_type_errors("../example.R", full_results = TRUE)
 
 test_that("It can get typedefs from an example file", {
   expect_type(get_file_typedefs("../example.R"), "list")

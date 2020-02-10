@@ -38,7 +38,7 @@ First, write type annotations in Roxygen2 comments. Types should be placed in an
 
 Then run it through the type checker.
 
-```{r}
+```{r message=FALSE}
 typer::get_type_errors(system.file("example", "simple.R", package = "typer"))
 ```
 

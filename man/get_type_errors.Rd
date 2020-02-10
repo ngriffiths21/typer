@@ -4,10 +4,12 @@
 \alias{get_type_errors}
 \title{Check a file for type errors}
 \usage{
-get_type_errors(filename)
+get_type_errors(filename, full_results = FALSE)
 }
 \arguments{
 \item{filename}{File to check}
+
+\item{full_results}{if TRUE, return all results. If FALSE, only return errors.}
 }
 \value{
 A list containing the errors

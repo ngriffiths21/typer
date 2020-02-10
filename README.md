@@ -34,42 +34,41 @@ addtwo <- function (x) {
   x + 2L
 }
 
-str(addtwo(10L))
-#>  int 12
+#' @param x <integer> a number
+#' @return <integer a number
+good <- function (x) {
+  addtwo(x)
+}
+
+#' @param x <character> a char
+#' @return <integer> a number
+bad <- function (x) {
+  addtwo(x)
+}
 ```
 
 Then run it through the type checker.
 
 ``` r
 typer::get_type_errors(system.file("example", "simple.R", package = "typer"))
-#>  int 12
-#> Warning in do.call(reporter, list(text)): cannot check function `+` because it
-#> is not defined.
-#> valid symbol `x`
-#> valid literal `2`
+#> Warning in (function (text) : error in call to `addtwo` in `bad`! wanted
+#> integer; got character
 #> [[1]]
-#> `+`
+#> [[1]]$fn
+#> [1] "bad"
 #> 
-#> [[2]]
-#> [[2]]$fn
-#> [1] "addtwo"
+#> [[1]]$type
+#> [1] "call"
 #> 
-#> [[2]]$type
-#> [1] "message"
+#> [[1]]$call
+#> addtwo(x = character(0))
 #> 
-#> [[2]]$text
-#> [1] "valid symbol `x`"
+#> [[1]]$expected_params
+#>         x 
+#> "integer" 
 #> 
-#> 
-#> [[3]]
-#> [[3]]$fn
-#> [1] "addtwo"
-#> 
-#> [[3]]$type
-#> [1] "message"
-#> 
-#> [[3]]$text
-#> [1] "valid literal `2`"
+#> [[1]]$passed
+#> [1] FALSE
 ```
 
 ## License
